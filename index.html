@@ -17,10 +17,16 @@ textarea, output, button, select {
 color:#eee;
 background-color:#111;
 }
+label {
+  margin-right: 1em;
+}
 </style>
 </head>
 
 <body>
+  <form id="controls">
+    <!-- Elements added here at runtime -->
+  </form>
   <div>
     <textarea id="input" placeholder="type something in here" rows="8" cols="80"></textarea>
   </div>
@@ -30,23 +36,69 @@ background-color:#111;
 </body>
 
 <script type="text/javascript">
-  // TODO more replacements and allow selecting which are applied
-  let replacements = [
-    [/i/gi, "1"],
-    // Only replace "you" with "u" when it's the start of the string, or
-    // there's whitespace before it, and there's either whitespace or
-    // punctuation, or the end of the string after it.
-    [/(^|\s)you([\s,\.!?'"]|$)/gi, "$1u$2"],
-    [/a/gi, "4"],
-    [/e/gi, "3"],
-    [/o/gi, "0"],
-    [/t/gi, "7"],
-  ]
+  const controlsElement = document.getElementById("controls");
 
-  const input = document.getElementById("input");
-  const output = document.getElementById("output");
+  const appendCheckbox = ({id, checked, name, replacement}) => {
+    const checkbox = document.createElement("input");
+    checkbox.id = id;
+    checkbox.type = "checkbox";
+    checkbox.checked = checked;
 
-  input.addEventListener("input", () => {
+    controlsElement.appendChild(checkbox);
+
+    const label = document.createElement("label");
+    label.htmlFor = id;
+    label.textContent = name || id;
+
+    controlsElement.appendChild(label);
+
+    return {checkbox, replacement};
+  };
+
+  const controls = [
+    appendCheckbox({
+        id: "you to u",
+        checked: true,
+        // Only replace "you" with "u" when it's the start of the string, or
+        // there's whitespace before it, and there's either whitespace or
+        // punctuation, or the end of the string after it.
+        replacement: [/(^|\s)you([\s,\.!?'"]|$)/gi, "$1u$2"],
+    }),
+    appendCheckbox({
+        id: "l to 1",
+        checked: true,
+        replacement: [/l/gi, "1"]
+    }),
+    appendCheckbox({
+        id: "i to 1",
+        checked: true,
+        replacement: [/i/gi, "1"]
+    }),
+    appendCheckbox({
+        id: "a to 4",
+        checked: true,
+        replacement: [/a/gi, "4"]
+    }),
+    appendCheckbox({
+        id: "e to 3",
+        checked: true,
+        replacement: [/e/gi, "3"]
+    }),
+    appendCheckbox({
+        id: "o to 0",
+        checked: true,
+        replacement: [/o/gi, "0"]
+    }),
+    appendCheckbox({
+        id: "t to 7",
+        checked: true,
+        replacement: [/t/gi, "7"]
+    }),
+  ];
+
+  let replacements = [];
+
+  const render = () => {
     let s = input.value
 
     for ([from, to] of replacements) {
@@ -54,7 +106,28 @@ background-color:#111;
     }
 
     output.innerText = s
-  })
+  };
+
+  const sync = () => {
+    replacements = []
+
+    for (control of controls) {
+      if (control.checkbox.checked) {
+        replacements.push(control.replacement);
+      }
+    }
+
+    render();
+  };
+
+  controlsElement.addEventListener("change", sync);
+
+  const input = document.getElementById("input");
+  const output = document.getElementById("output");
+
+  input.addEventListener("input", render);
+
+  sync();
 </script>
 
 </html>
