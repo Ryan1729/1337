@@ -17,14 +17,19 @@ textarea, output, button, select {
 color:#eee;
 background-color:#111;
 }
+span {
+  white-space: nowrap;
+}
 label {
   margin-right: 1em;
+  white-space: nowrap;
 }
 </style>
 </head>
 
 <body>
   <form id="controls">
+    <div> Applied in listed order </div>
     <!-- Elements added here at runtime -->
   </form>
   <div>
@@ -39,21 +44,27 @@ label {
   const controlsElement = document.getElementById("controls");
 
   const appendCheckbox = ({id, checked, name, replacement}) => {
+    const span = document.createElement("span");
+
     const checkbox = document.createElement("input");
     checkbox.id = id;
     checkbox.type = "checkbox";
     checkbox.checked = checked;
 
-    controlsElement.appendChild(checkbox);
+    span.appendChild(checkbox);
 
     const label = document.createElement("label");
     label.htmlFor = id;
     label.textContent = name || id;
 
-    controlsElement.appendChild(label);
+
+    span.appendChild(label);
+    controlsElement.appendChild(span);
 
     return {checkbox, replacement};
   };
+
+  const appendBr = () => controlsElement.appendChild(document.createElement("br"));
 
   const controls = [
     appendCheckbox({
@@ -66,7 +77,7 @@ label {
     }),
     appendCheckbox({
         id: "l to 1",
-        checked: true,
+        checked: false,
         replacement: [/l/gi, "1"]
     }),
     appendCheckbox({
@@ -80,20 +91,112 @@ label {
         replacement: [/a/gi, "4"]
     }),
     appendCheckbox({
+        id: "a to @",
+        checked: true,
+        replacement: [/a/gi, "@"]
+    }),
+    appendCheckbox({
+        id: "et to 37",
+        checked: true,
+        replacement: [/et/gi, "37"]
+    }),
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Comma_operator
+    // I plead guilty to these code crimes.
+    (appendBr(), appendCheckbox({
         id: "e to 3",
         checked: true,
         replacement: [/e/gi, "3"]
-    }),
+    })),
     appendCheckbox({
         id: "o to 0",
         checked: true,
         replacement: [/o/gi, "0"]
     }),
     appendCheckbox({
+        id: "t to +",
+        checked: false,
+        replacement: [/t/gi, "+"]
+    }),
+    appendCheckbox({
         id: "t to 7",
-        checked: true,
+        checked: false,
         replacement: [/t/gi, "7"]
     }),
+    appendCheckbox({
+        id: "b to 6",
+        checked: false,
+        replacement: [/b/gi, "6"]
+    }),
+    appendCheckbox({
+        id: "b to 8",
+        checked: false,
+        replacement: [/b/gi, "8"]
+    }),
+    (appendBr(), appendCheckbox({
+        id: "g to 9",
+        checked: false,
+        replacement: [/g/gi, "9"]
+    })),
+    appendCheckbox({
+        id: "q to 9",
+        checked: false,
+        replacement: [/q/gi, "9"]
+    }),
+    appendCheckbox({
+        id: "h to #",
+        checked: false,
+        replacement: [/h/gi, "#"]
+    }),
+    appendCheckbox({
+        id: "s to 5",
+        checked: false,
+        replacement: [/s/gi, "5"]
+    }),
+    appendCheckbox({
+        id: "s to $",
+        checked: false,
+        replacement: [/s/gi, "$"]
+    }),
+    appendCheckbox({
+        id: "v to \\/",
+        checked: false,
+        replacement: [/v/gi, "\\/"]
+    }),
+    (appendBr(), appendCheckbox({
+        id: "n to /\\/",
+        checked: false,
+        replacement: [/n/gi, "/\\/"]
+    })),
+    appendCheckbox({
+        id: "m to /\\/\\",
+        checked: false,
+        replacement: [/m/gi, "/\\/\\"]
+    }),
+    appendCheckbox({
+        id: "c to (",
+        checked: false,
+        replacement: [/c/gi, "("]
+    }),
+    appendCheckbox({
+        id: "d to |)",
+        checked: false,
+        replacement: [/d/gi, "|)"]
+    }),
+    appendCheckbox({
+        id: "x to ><",
+        checked: false,
+        replacement: [/x/gi, "><"]
+    }),
+    appendCheckbox({
+        id: "y to `/",
+        checked: false,
+        replacement: [/y/gi, "`/"]
+    }),
+    (appendBr(), appendCheckbox({
+        id: "k to |<",
+        checked: false,
+        replacement: [/k/gi, "|<"]
+    })),
   ];
 
   let replacements = [];
