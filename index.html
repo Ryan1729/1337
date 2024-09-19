@@ -3,7 +3,6 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <!-- TODO update the title according to the selected options -->
     <title>1337</title><style type="text/css">body{
 margin:40px auto;
 max-width:650px;
@@ -202,13 +201,16 @@ label {
   let replacements = [];
 
   const render = () => {
+    let title = "leet";
     let s = input.value
 
     for ([from, to] of replacements) {
-      s = s.replaceAll(from, to)
+      s = s.replaceAll(from, to);
+      title = title.replaceAll(from, to);
     }
 
     output.innerText = s
+    document.title = title;
   };
 
   const sync = () => {
