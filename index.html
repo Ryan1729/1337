@@ -36,6 +36,7 @@ label {
   </div>
   <div>
     <pre id="output"></pre>
+    <button id="copy-button">📋</button>
   </div>
 </body>
 
@@ -233,6 +234,29 @@ label {
   input.addEventListener("input", render);
 
   sync();
+
+  async function writeClipboardText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  const copyButton = document.getElementById("copy-button");
+  copyButton.addEventListener("click", () => {
+    writeClipboardText(output.innerText).then(() => {
+      copyButton.disabled = true;
+      copyButton.innerText = "✅";
+      setTimeout(
+        () => {
+          copyButton.innerText = "📋";
+          copyButton.disabled = false;
+        },
+        16 * 30
+      )
+    });
+  });
 </script>
 
 </html>
